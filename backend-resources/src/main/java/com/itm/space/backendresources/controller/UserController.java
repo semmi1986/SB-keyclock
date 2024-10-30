@@ -6,8 +6,9 @@ import com.itm.space.backendresources.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @RestController
@@ -28,8 +28,10 @@ public class UserController {
     @PostMapping
     @Secured("ROLE_MODERATOR")
     @SecurityRequirement(name = "oauth2_auth_code")
-    public void create(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<Void> create(@RequestBody @Valid UserRequest userRequest) {
+
         userService.createUser(userRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
